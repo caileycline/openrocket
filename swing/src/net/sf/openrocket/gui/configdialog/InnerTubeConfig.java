@@ -116,7 +116,11 @@ public class InnerTubeConfig extends RocketComponentConfig {
 
 		panel.add(new UnitSelector(thicknessModel), "growx");
 		panel.add(new BasicSlider(thicknessModel.getSliderModel(0, 0.01)), "w 100lp, wrap");
-
+        innerRadiusModel.addChangeListener(thicknessModel);
+        outerRadiusModel.addChangeListener(thicknessModel);
+	        
+		thicknessModel.addChangeListener(outerRadiusModel);
+		thicknessModel.addChangeListener(innerRadiusModel);
 
 		////  Inner tube length
 		panel.add(new JLabel(trans.get("ThicknessRingCompCfg.tab.Length")));
