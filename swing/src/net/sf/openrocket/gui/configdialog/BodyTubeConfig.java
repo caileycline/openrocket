@@ -92,7 +92,10 @@ public class BodyTubeConfig extends RocketComponentConfig {
 
 		panel.add(new UnitSelector(thicknessModel), "growx");
 		panel.add(new BasicSlider(thicknessModel.getSliderModel(0, 0.01)), "w 100lp, wrap 0px");
-
+		innerRadiusModel.addChangeListener(thicknessModel);
+		outerRadiusModel.addChangeListener(thicknessModel);
+		
+		
 		//// Filled
 		check = new JCheckBox(new BooleanModel(component, "Filled"));
 		check.setText(trans.get("BodyTubecfg.checkbox.Filled"));
