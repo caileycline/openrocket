@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 	
 	public enum Position {
 		// This position is in absolute position, measured from the rocket's origin.
-		//    The origin is the tip of the nose cone.
+		//    (The origin is the tip of the nose cone.)
 		ABSOLUTE(Application.getTranslator().get("RocketComponent.Position.ABSOLUTE")),
 		// Position to touch previous sibling component, in the increasing coordinate direction
 		AFTER(Application.getTranslator().get("RocketComponent.Position.AFTER")),
@@ -57,10 +58,10 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 		// This axis is measured from the middle of the parent component to the middle of this component
 		MIDDLE(Application.getTranslator().get("RocketComponent.Position.MIDDLE")),
 		// Parent values are mirrored across the x-axis.
-		// n.b. Only applicable for children of off-axis components
+		//    - Only applicable for children of off-axis components
 		MIRROR_XY(Application.getTranslator().get("RocketComponent.Position.MIRROR_XY")),
 		// Position this component on the outside of the parent component
-		//    => equivalent to 'autoRadius()'
+		//    - Equivalent to 'autoRadius()'
 		ON(Application.getTranslator().get("RocketComponent.Position.ON")),
 		// Position this component relative to parent's zero 
 		RELATIVE(Application.getTranslator().get("RocketComponent.Position.RELATIVE")),
@@ -77,9 +78,10 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 		public String toString() {
 			return title;
 		}
-		
+
 		static final Position[] angularValues(){ return new Position[]{ Position.ABSOLUTE, Position.MIRROR_XY, Position.RELATIVE }; }
 		static final Position[] axialValues(){ return new Position[]{ Position.ABSOLUTE, Position.TOP, Position.MIDDLE, Position.BOTTOM }; }
+		static final Position[] offAxisValues(){ return new Position[]{ Position.ABSOLUTE, Position.FIXED};}
 		static final Position[] radialValues(){ return new Position[]{ Position.ABSOLUTE, Position.ON}; }
 	}
 	
@@ -906,8 +908,15 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 	}
 	
 	
+	// deprecated because the name doesn't indicate *which* position this refers to. 
+	// A component has positions in each of the three dimensions, and this only refers to one
+	@Deprecated
+	protected void setRelativePosition(final RocketComponent.Position position) {
+		setAxialMethod( position);
+	}
+	
 	/**
-	 * Set the positioning of the component relative to its parent component.
+	 * Set the x-axis positioning method of the component relative to its parent component.
 	 * The actual position of the component is maintained to the best ability.
 	 * <p>
 	 * The default implementation is of protected visibility, since many components
@@ -915,17 +924,22 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 	 * it should override this with a public method that simply calls this
 	 * supermethod AND fire a suitable ComponentChangeEvent.
 	 *
-	 * @param position	the relative positioning.
+	 * @param position	the relative axial positioning.
 	 */
-	protected void setRelativePosition(final RocketComponent.Position position) {
+	protected void setAxialMethod( final RocketComponent.Position position){
 		if (position == this.relativePosition) {
 			// no change.
 			return;
 		}
 		
-		// this variable does not change the internal representation
-		// the relativePosition (method) is just the lens through which external code may view this component's position. 
-		this.relativePosition = position;
+		for( Position allowed : Position.axialValues() ){
+			if( allowed == position ){
+				// this variable does not change the internal representation
+				// the relativePosition (method) is just the lens through which external code may view this component's position. 
+				this.relativePosition = position;				
+			}
+		}
+
 	}
 	
 	/**
