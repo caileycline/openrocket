@@ -44,29 +44,30 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 	// on to the Translator object, we'll just use when we need it.
 	//private static final Translator trans = Application.getTranslator();
 	
-	
-	/**
-	 * Text is suitable to the form
-	 *    Position relative to:  <title>
-	 */
 	public enum Position {
-		/** Position relative to the top of the parent component. */
-		//// Top of the parent component
-		TOP(Application.getTranslator().get("RocketComponent.Position.TOP")),
-		/** Position relative to the middle of the parent component. */
-		//// Middle of the parent component
-		MIDDLE(Application.getTranslator().get("RocketComponent.Position.MIDDLE")),
-		/** Position relative to the bottom of the parent component. */
-		//// Bottom of the parent component
-		BOTTOM(Application.getTranslator().get("RocketComponent.Position.BOTTOM")),
-		/** Position after the parent component (for body components). */
-		//// After the parent component
+		// This position is in absolute position, measured from the rocket's origin.
+		//    The origin is the tip of the nose cone.
+		ABSOLUTE(Application.getTranslator().get("RocketComponent.Position.ABSOLUTE")),
+		// Position to touch previous sibling component, in the increasing coordinate direction
 		AFTER(Application.getTranslator().get("RocketComponent.Position.AFTER")),
-		/** Specify an absolute X-coordinate position. */
-		//// Tip of the nose cone
-		ABSOLUTE(Application.getTranslator().get("RocketComponent.Position.ABSOLUTE"));
+		// This axis is measured from the bottom of the parent component to the bottom of this component
+		BOTTOM(Application.getTranslator().get("RocketComponent.Position.BOTTOM")),
+		// This coordinate does not change.
+		FIXED(Application.getTranslator().get("RocketComponent.Position.FIXED")),
+		// This axis is measured from the middle of the parent component to the middle of this component
+		MIDDLE(Application.getTranslator().get("RocketComponent.Position.MIDDLE")),
+		// Parent values are mirrored across the x-axis.
+		// n.b. Only applicable for children of off-axis components
+		MIRROR_XY(Application.getTranslator().get("RocketComponent.Position.MIRROR_XY")),
+		// Position this component on the outside of the parent component
+		//    => equivalent to 'autoRadius()'
+		ON(Application.getTranslator().get("RocketComponent.Position.ON")),
+		// Position this component relative to parent's zero 
+		RELATIVE(Application.getTranslator().get("RocketComponent.Position.RELATIVE")),
+		// This axis is measured from the top of the parent component to the top of this component
+		TOP(Application.getTranslator().get("RocketComponent.Position.TOP"));
 		
-		private String title;
+		private final String title;
 		
 		Position(String title) {
 			this.title = title;
@@ -76,7 +77,12 @@ public abstract class RocketComponent implements ChangeSource, Cloneable, Iterab
 		public String toString() {
 			return title;
 		}
+		
+		static final Position[] angularValues(){ return new Position[]{ Position.ABSOLUTE, Position.MIRROR_XY, Position.RELATIVE }; }
+		static final Position[] axialValues(){ return new Position[]{ Position.ABSOLUTE, Position.TOP, Position.MIDDLE, Position.BOTTOM }; }
+		static final Position[] radialValues(){ return new Position[]{ Position.ABSOLUTE, Position.ON}; }
 	}
+	
 	
 	/**
 	 * A safety mutex that can be used to prevent concurrent access to this component.
