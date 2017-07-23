@@ -480,6 +480,7 @@ public class DoubleModel implements StateChangeListener, ChangeSource, Invalidat
 						" key=" + key + " value=" + value);
 				oldValue = (Boolean) value;
 				setAutomatic((Boolean) value);
+				fireStateChanged();
 			} else {
 				log.debug("Passing ActionModel putValue call to supermethod for " + DoubleModel.this.toString() +
 						" key=" + key + " value=" + value);
