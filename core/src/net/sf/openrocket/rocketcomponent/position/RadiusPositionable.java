@@ -6,7 +6,4 @@ public interface RadiusPositionable {
 	public void setAutoRadialOffset( final boolean auto );
 	public void setRadialOffset(final double radius);
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> pr/23
